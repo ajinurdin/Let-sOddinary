@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animasi Full-Icon ke Full-Logo (Let's Oddinary)</title>
+  <style>
+    :root {
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-smooth: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    /* Panel Tombol Kontrol Demo */
+    .controls {
+      display: flex;
+      gap: 10px;
+      background: #1e293b;
+      padding: 8px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+    }
+
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #334155;
+      color: #e2e8f0;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: #475569;
+    }
+
+    button.active {
+      background: #F0B70D;
+      color: #0f172a;
+    }
+
+    .caption {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    /* ==========================================================
+       CONTAINER UTAMA LOGO (375x375 sesuai SVG asli)
+       ========================================================== */
+    .logo-container {
+      width: 375px;
+      height: 375px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+      transition: transform 0.3s var(--ease-spring);
+    }
+
+    .logo-container:hover {
+      transform: scale(1.02);
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    /* Mengatur referensi titik transformasi per-elemen SVG */
+    .anchor-L,
+    .anchor-O,
+    .star-inside-O,
+    .char-item {
+      transform-box: fill-box;
+    }
+
+    /* ==========================================================
+       STATE AWAL: FULL-ICON (Frame 6 - "LO")
+       Dihitung langsung dari rasio path Full-Icon / Full-Logo:
+       - L: dari (97, 42) [56x89] -> ke (96, 53) [168.559x267.888]
+       - O: dari (97, 138) [46x94] -> ke (186.908, 53) [92.092x188.188]
+       ========================================================== */
+    .anchor-L {
+      transform-origin: top left;
+      transform: translate(-1px, 11px) scale(3.01, 3.01);
+      transition: transform 0.7s var(--ease-smooth);
+    }
+
+    .anchor-O {
+      transform-origin: top left;
+      transform: translate(89.908px, -85px) scale(2.002, 2.002);
+      transition: transform 0.7s var(--ease-smooth);
+    }
+
+    .star-inside-O {
+      transform-origin: center;
+      transition: transform 0.85s var(--ease-spring);
+    }
+
+    /* Semua huruf selain L dan O disembunyikan saat kondisi Full-Icon */
+    .char-item {
+      opacity: 0;
+      transform-origin: center;
+      transform: translateY(14px) scale(0.55);
+      transition: 
+        opacity 0.35s ease,
+        transform 0.55s var(--ease-spring);
+    }
+
+    /* ==========================================================
+       STATE AKHIR: FULL-LOGO (Frame 5 - "LET'S ODDINARY")
+       Aktif ketika di-hover atau diklik (.is-expanded)
+       ========================================================== */
+    .logo-container.mode-interactive:hover .anchor-L,
+    .logo-container.is-expanded .anchor-L {
+      transform: translate(0, 0) scale(1, 1);
+    }
+
+    .logo-container.mode-interactive:hover .anchor-O,
+    .logo-container.is-expanded .anchor-O {
+      transform: translate(0, 0) scale(1, 1);
+    }
+
+    .logo-container.mode-interactive:hover .star-inside-O,
+    .logo-container.is-expanded .star-inside-O {
+      transform: rotate(180deg);
+    }
+
+    .logo-container.mode-interactive:hover .char-item,
+    .logo-container.is-expanded .char-item {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Efek Kemunculan Berurutan (Staggered Animation) */
+    .logo-container.mode-interactive:hover .step-1,
+    .logo-container.is-expanded .step-1 { transition-delay: 0.18s; }
+
+    .logo-container.mode-interactive:hover .step-2,
+    .logo-container.is-expanded .step-2 { transition-delay: 0.25s; }
+
+    .logo-container.mode-interactive:hover .step-3,
+    .logo-container.is-expanded .step-3 { transition-delay: 0.32s; }
+
+    .logo-container.mode-interactive:hover .step-4,
+    .logo-container.is-expanded .step-4 { transition-delay: 0.39s; }
+
+    .logo-container.mode-interactive:hover .step-5,
+    .logo-container.is-expanded .step-5 { transition-delay: 0.46s; }
+
+    .logo-container.mode-interactive:hover .step-6,
+    .logo-container.is-expanded .step-6 { transition-delay: 0.53s; }
+
+
+    /* ==========================================================
+       MODE INTRO / SPLASH SCREEN (@keyframes otomatis)
+       ========================================================== */
+    .logo-container.mode-splash {
+      animation: badgeScaleIn 0.6s var(--ease-spring) forwards;
+    }
+
+    .logo-container.mode-splash .anchor-L {
+      animation: kfMorphL 2.2s var(--ease-smooth) forwards;
+    }
+
+    .logo-container.mode-splash .anchor-O {
+      animation: kfMorphO 2.2s var(--ease-smooth) forwards;
+    }
+
+    .logo-container.mode-splash .star-inside-O {
+      animation: kfSpinStar 2.2s var(--ease-spring) forwards;
+    }
+
+    .logo-container.mode-splash .char-item {
+      animation: kfPopChar 0.6s var(--ease-spring) forwards;
+    }
+
+    .logo-container.mode-splash .step-1 { animation-delay: 1.10s; }
+    .logo-container.mode-splash .step-2 { animation-delay: 1.18s; }
+    .logo-container.mode-splash .step-3 { animation-delay: 1.26s; }
+    .logo-container.mode-splash .step-4 { animation-delay: 1.34s; }
+    .logo-container.mode-splash .step-5 { animation-delay: 1.42s; }
+    .logo-container.mode-splash .step-6 { animation-delay: 1.50s; }
+
+    @keyframes badgeScaleIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes kfMorphL {
+      0%, 38% { transform: translate(-1px, 11px) scale(3.01, 3.01); }
+      75%, 100% { transform: translate(0, 0) scale(1, 1); }
+    }
+
+    @keyframes kfMorphO {
+      0%, 38% { transform: translate(89.908px, -85px) scale(2.002, 2.002); }
+      75%, 100% { transform: translate(0, 0) scale(1, 1); }
+    }
+
+    @keyframes kfSpinStar {
+      0%, 38% { transform: rotate(0deg); }
+      75%, 100% { transform: rotate(180deg); }
+    }
+
+    @keyframes kfPopChar {
+      0% { opacity: 0; transform: translateY(14px) scale(0.55); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <button id="btn-interactive" class="active" onclick="setAnimationMode('interactive')">
+      Mode Interaktif (Hover / Klik)
+    </button>
+    <button id="btn-splash" onclick="setAnimationMode('splash')">
+      Putar Intro / Splash Screen
+    </button>
+  </div>
+
+  <p class="caption" id="caption-text">
+    Arahkan kursor (hover) atau klik logo untuk mengubah <b>Full-Icon</b> menjadi <b>Full-Logo</b>.
+  </p>
+
+  <!-- SVG GABUNGAN FULL-ICON & FULL-LOGO ASLI ANDA -->
+  <div class="logo-container mode-interactive" id="logoWidget" onclick="toggleClickedState()">
+    <svg id="Full-Logo" width="375" height="375" viewBox="0 0 375 375" fill="none" xmlns="http://www.w3.org/2000/svg">
+      
+      <!-- Background Lingkaran Cream -->
+      <circle cx="187.5" cy="187.5" r="187.5" fill="#FFFBEF"/>
+
+      <!-- ==================================================
+           HURUF-HURUF FULL-LOGO (Muncul Bertahap)
+           ================================================== -->
+
+      <!-- Huruf E -->
+      <path class="char-item step-1" d="M149.801 90.4318H173V105H121L130.305 42L173 42V55.5474L149.801 55.5474L145.677 67.0418H168.533V79.387H145.677L149.801 90.4318Z" fill="#1A63CC"/>
+
+      <!-- Huruf T -->
+      <path class="char-item step-1" d="M246 41V60.486L217.52 60.486L220.849 106H190.585L195.943 60.486H177.55L177 41L246 41Z" fill="#1A63CC"/>
+
+      <!-- Tanda Petik / Apostrof (') -->
+      <path class="char-item step-2" d="M254.019 65.7341V73C260.36 72.5023 268.534 70.7439 272.293 67.7247C276.098 64.7055 278 60.691 278 55.6812V41H253L254.019 59.8235H268.761C268.006 62.1953 261.501 66.6978 254.019 65.7341Z" fill="#F0B70D"/>
+
+      <!-- Huruf S -->
+      <path class="char-item step-2" d="M243.688 76H278V94.8237C272.009 92.8931 266.706 90.5367 261.913 90.9229C255.922 91.4055 245.029 94.7842 264.636 99.1281C284.243 103.472 270.398 124.046 261.116 127.645C252.402 131.023 189.949 133.437 157.634 131.023L156 108.821C180.327 110.591 229.091 111.717 233.884 111.717C239.875 111.717 248.045 112.2 246.411 107.856C244.777 103.512 233.339 104.96 228.982 100.616C225.364 97.0082 226.348 87.5838 227.893 84.2052C230.616 78.2503 239.33 76.5558 243.688 76Z" fill="#1A63CC"/>
+
+      <!-- Huruf D Pertama -->
+      <path class="char-item step-3" d="M147 139H170.68C178.211 139 183.791 140.942 187.42 144.825C191.14 148.709 193 154.401 193 161.903V193.097C193 200.599 191.14 206.291 187.42 210.175C183.791 214.058 178.211 216 170.68 216H147V139ZM167.514 152.239V202.761H170.408C172.767 202.761 174.627 202.099 175.988 200.775C177.349 199.451 178.03 197.112 178.03 193.759V161.241C178.03 157.888 177.349 155.549 175.988 154.225C174.627 152.901 172.767 152.239 170.408 152.239H167.514Z" fill="#E61626"/>
+
+      <!-- Garis Kuning di Bawah D Pertama -->
+      <rect class="char-item step-3" x="146" y="220" width="45" height="12" fill="#F0B70D"/>
+
+      <!-- Huruf D Kedua -->
+      <path class="char-item step-3" d="M197 139H220.68C228.211 139 233.791 140.949 237.42 144.846C241.14 148.743 243 154.456 243 161.984V209.016C243 216.544 241.14 222.257 237.42 226.154C233.791 230.051 228.211 232 220.68 232H197V139ZM206.5 152.286V168.893V185.5V218.714H220.408C222.767 218.714 224.627 218.05 225.988 216.721C227.349 215.393 228.03 213.046 228.03 209.68V161.32C228.03 157.954 227.349 155.607 225.988 154.279C224.627 152.95 222.767 152.286 220.408 152.286H206.5Z" fill="#E61626"/>
+
+      <!-- Huruf I Berbintang -->
+      <path class="char-item step-4" d="M252 232L255.557 168.456L250.511 170.918C249.95 171.192 249.302 170.74 249.4 170.143L251.085 159.898C251.123 159.664 251.043 159.426 250.868 159.259L243.226 151.92C242.781 151.492 243.029 150.761 243.651 150.667L254.331 149.037C254.575 149 254.785 148.854 254.897 148.643L259.813 139.404C260.099 138.865 260.901 138.865 261.187 139.404L266.103 148.643C266.215 148.854 266.425 149 266.669 149.037L277.349 150.667C277.971 150.761 278.219 151.492 277.774 151.92L270.132 159.259C269.957 159.426 269.877 159.664 269.915 159.898L271.6 170.143C271.698 170.74 271.05 171.192 270.489 170.918L266.983 169.208L271 232H252Z" fill="#F0B70D"/>
+
+      <!-- Huruf N & Titik Kuning -->
+      <path class="char-item step-4" d="M109.641 275.988V313.616H97V239H113.441L124.451 282.99V239H134V332H120.473L109.641 275.988Z" fill="#1A63CC"/>
+      <ellipse class="char-item step-5" cx="103.5" cy="324.5" rx="6.5" ry="7.5" fill="#F0B70D"/>
+
+      <!-- Huruf A -->
+      <path class="char-item step-5" d="M138.5 332H135L146.596 239H164.472L178 332H161.266L156.383 304.424H141.634L138.5 332ZM142.309 298.477L147.901 249.273L149 257.924L151.5 276.849L155.33 298.477H142.309Z" fill-rule="evenodd" clip-rule="evenodd" fill="#1A63CC"/>
+
+      <!-- Huruf R -->
+      <path class="char-item step-5" d="M198.044 239C213.178 238.998 230.317 238.997 230.317 258.329C230.317 278.142 215.459 278.514 205.787 278.445C210.618 298.921 223.998 328.881 232.918 326.948C241.839 325.015 242.21 318.733 242.21 309.552H244.812C245.927 322.599 242.21 333.714 230.317 331.78C215.196 329.323 202.442 280.932 202.07 278.329C201.646 278.308 201.236 278.286 200.839 278.265C199.606 278.2 198.51 278.142 197.61 278.142V331.78H182V239H197.61L198.044 239ZM197.61 269.927C208.388 270.41 223.255 269.927 224.37 258.329C225.485 246.732 206.902 247.054 197.61 247.215V269.927Z" fill-rule="evenodd" clip-rule="evenodd" fill="#1A63CC"/>
+
+      <!-- Huruf Y -->
+      <path class="char-item step-6" d="M236 239L251.046 301.177L248.5 332H265L262.954 301.177L278 239H262.954L257.541 271.959L253.45 290.366L241.5 239H236Z" fill-rule="evenodd" clip-rule="evenodd" fill="#1A63CC"/>
+
+
+      <!-- ==================================================
+           ELEMEN JANGKAR (ANCHOR): HURUF "L" & "O"
+           Ditaruh paling akhir agar tampil di lapisan teratas
+           ================================================== -->
+
+      <!-- Huruf L -->
+      <path class="anchor-L" d="M114.843 108.528H149.468L153 131H97L97 46.8074L123.796 42L114.843 108.528Z" fill="#1A63CC"/>
+
+      <!-- Grup Huruf O + Bintang di dalamnya -->
+      <g class="anchor-O">
+        <!-- Badan Huruf O -->
+        <path d="M120 138C127.437 138 133.13 140.013 137.078 144.039C141.026 147.978 143 153.666 143 161.105V208.894C143 216.333 141.026 222.066 137.078 226.092C133.13 230.03 127.437 232 120 232C112.563 232 106.87 230.03 102.922 226.092C98.9739 222.066 97 216.333 97 208.894V161.105C97 153.666 98.974 147.978 102.922 144.039C106.87 140.013 112.563 138 120 138ZM120 152C116.12 152 113.15 153.392 111.09 156.176C109.03 158.899 108 162.833 108 167.978V201.022C108 206.167 109.03 210.131 111.09 212.915C113.15 215.638 116.12 217 120 217C123.88 217 126.85 215.638 128.91 212.915C130.97 210.131 132 206.167 132 201.022V167.978C132 162.833 130.97 158.899 128.91 156.176C126.85 153.392 123.88 152 120 152Z" fill="#F0B70D"/>
+        <!-- Bintang di dalam O (Dipisah menjadi path sendiri agar bisa berputar) -->
+        <path class="star-inside-O" d="M119.5 177C119.511 177.049 120.332 180.86 121.72 182.568C122.145 183.091 122.707 183.521 123.284 183.866C124.604 184.655 126 185 126 185C125.984 185.004 123.113 185.716 121.72 187.431C120.323 189.15 119.5 193 119.5 193C119.5 193 119.123 191.233 118.445 189.56C118.122 188.762 117.731 187.985 117.28 187.431C115.889 185.719 113.025 185.006 113 185C113 185 115.883 184.288 117.28 182.568C118.668 180.86 119.49 177.048 119.5 177Z" fill="#F0B70D"/>
+      </g>
+
+    </svg>
+  </div>
+
+  <script>
+    const logoWidget = document.getElementById('logoWidget');
+    const btnInteractive = document.getElementById('btn-interactive');
+    const btnSplash = document.getElementById('btn-splash');
+    const captionText = document.getElementById('caption-text');
+
+    function setAnimationMode(mode) {
+      logoWidget.classList.remove('mode-interactive', 'mode-splash', 'is-expanded');
+      void logoWidget.offsetWidth; // Restart CSS animation
+
+      if (mode === 'interactive') {
+        logoWidget.classList.add('mode-interactive');
+        btnInteractive.classList.add('active');
+        btnSplash.classList.remove('active');
+        captionText.innerHTML = 'Arahkan kursor (hover) atau klik logo untuk mengubah <b>Full-Icon</b> menjadi <b>Full-Logo</b>.';
+      } else {
+        logoWidget.classList.add('mode-splash');
+        btnSplash.classList.add('active');
+        btnInteractive.classList.remove('active');
+        captionText.innerHTML = 'Memutar animasi <b>Intro / Splash Screen</b> dari Full-Icon ke Full-Logo...';
+      }
+    }
+
+    function toggleClickedState() {
+      if (logoWidget.classList.contains('mode-interactive')) {
+        logoWidget.classList.toggle('is-expanded');
+      }
+    }
+  </script>
+</body>
+</html>
