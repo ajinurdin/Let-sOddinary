@@ -1,0 +1,414 @@
+:root {
+  --poster-purple: #6154C2;
+  --poster-purple-dark: #453a94;
+  --poster-lime: #C0CF2F;
+  --poster-lime-shadow: #73922A;
+  --poster-cream: #FFF5DA;
+  --poster-mint: #34D8A6;
+  --poster-pink: #F4819D;
+  --poster-magenta: #D11F9B;
+  --poster-yellow: #F6E37A;
+  --poster-gold: #F0BB49;
+  --poster-blue: #2F80D9;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--poster-purple);
+  color: var(--poster-cream);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+/* FLOATING HUD NAVIGATION */
+.floating-hud {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 900;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 95%;
+  pointer-events: none;
+}
+
+.hud-pill {
+  pointer-events: auto;
+  background: var(--poster-cream);
+  color: #1f1646;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 0.85rem;
+  padding: 10px 20px;
+  border-radius: 40px;
+  border: 4px solid #1f1646;
+  box-shadow: 5px 6px 0px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.action-pill {
+  background: var(--poster-gold);
+}
+
+.hud-pill:hover {
+  transform: translateY(-3px) rotate(-2deg);
+  background: var(--poster-lime);
+}
+
+/* TOAST PETUNJUK INTERAKTIF */
+.interactive-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f1646;
+  color: var(--poster-cream);
+  border: 3px solid var(--poster-lime);
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  z-index: 800;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  white-space: nowrap;
+  animation: floatToast 3s ease-in-out infinite;
+}
+
+@keyframes floatToast {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -6px); }
+}
+
+/* PANGGUNG UTAMA POSTER (UTUH & MENYATU) */
+.poster-stage {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--poster-purple);
+  padding: 0;
+  position: relative;
+}
+
+.poster-container {
+  width: 100%;
+  max-width: 820px; /* Ukuran ideal agar poster terlihat megah di desktop & full di HP */
+  margin: 0 auto;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+}
+
+.poster-container svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* EFEK INTERAKTIF PADA ELEMEN DI DALAM POSTER SVG */
+.svg-hotspot {
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.svg-hotspot:hover,
+.svg-hotspot.highlight-active {
+  transform: translate(-10px, -14px) scale(1.04);
+  filter: drop-shadow(12px 16px 0px rgba(0, 0, 0, 0.45)) brightness(1.08);
+}
+
+/* Animasi Dadu & Bintang di Poster */
+@keyframes diceFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(-3deg); }
+}
+
+@keyframes diceRollShake {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-22deg) scale(1.18) translateY(-25px); }
+  50% { transform: rotate(20deg) scale(1.2) translateY(-30px); }
+  75% { transform: rotate(-12deg) scale(1.1) translateY(-10px); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+.poster-dice-group {
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: diceFloat 3.8s ease-in-out infinite;
+}
+
+.poster-dice-group:hover {
+  filter: drop-shadow(10px 14px 0px rgba(0,0,0,0.35)) brightness(1.05);
+}
+
+.poster-dice-group.rolling-now {
+  animation: diceRollShake 0.65s ease-in-out !important;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.16) rotate(6deg); }
+}
+
+.poster-star {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: starTwinkle 2.8s ease-in-out infinite;
+}
+
+/* POP-UP MODAL BERGAYA KARTU BOARD GAME */
+.card-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 16, 52, 0.78);
+  backdrop-filter: blur(6px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.card-modal-backdrop.open {
+  display: flex;
+  animation: fadeIn 0.2s ease;
+}
+
+.board-game-card {
+  background: var(--poster-cream);
+  color: #1f1646;
+  border: 7px solid #1f1646;
+  border-radius: 32px;
+  max-width: 540px;
+  width: 100%;
+  padding: 32px;
+  position: relative;
+  box-shadow: 16px 18px 0px var(--poster-lime);
+  transform: rotate(-1deg);
+}
+
+.btn-close-card {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 3px solid #1f1646;
+  background: var(--poster-pink);
+  color: #1f1646;
+  font-weight: 900;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px #1f1646;
+}
+
+.card-header-badge {
+  display: inline-block;
+  background: var(--poster-mint);
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 3px solid #1f1646;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 0.8rem;
+  margin-bottom: 14px;
+  box-shadow: 3px 3px 0px #1f1646;
+}
+
+.card-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 2.1rem;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+.card-desc {
+  font-size: 0.96rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #362c66;
+}
+
+.card-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  background: #fff;
+  border: 3px solid #1f1646;
+  border-radius: 16px;
+  padding: 10px 14px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--poster-magenta);
+}
+
+.stat-val {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.card-rules-box {
+  background: rgba(97, 84, 194, 0.1);
+  border-left: 5px solid var(--poster-purple);
+  padding: 12px 16px;
+  border-radius: 0 12px 12px 0;
+  margin-bottom: 22px;
+  font-size: 0.88rem;
+}
+
+.card-rules-box ul {
+  padding-left: 18px;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.card-footer-btns {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-game-primary, .btn-game-secondary {
+  flex: 1;
+  text-align: center;
+  padding: 14px;
+  border-radius: 16px;
+  border: 3px solid #1f1646;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  text-decoration: none;
+  color: #1f1646;
+  box-shadow: 4px 5px 0px #1f1646;
+  transition: 0.2s;
+}
+
+.btn-game-primary { background: var(--poster-lime); }
+.btn-game-secondary { background: #fff; }
+
+.btn-game-primary:hover, .btn-game-secondary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 7px 0px #1f1646;
+}
+
+/* SECTION KELANJUTAN DI BAWAH POSTER */
+.continuation-section {
+  padding-bottom: 90px;
+}
+
+.slanted-banner {
+  background: var(--poster-lime);
+  color: #1f1646;
+  border-top: 6px solid var(--poster-cream);
+  border-bottom: 6px solid var(--poster-cream);
+  padding: 16px 0;
+  transform: rotate(-3deg) scale(1.05);
+  box-shadow: 0 12px 0 var(--poster-lime-shadow);
+  margin: 20px 0 60px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+}
+
+.content-wrapper {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.mont-giant-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 3rem;
+  text-align: center;
+  color: var(--poster-gold);
+  -webkit-text-stroke: 2px var(--poster-cream);
+  text-shadow: 6px 6px 0px var(--poster-lime-shadow);
+  transform: rotate(-2deg);
+  margin-bottom: 14px;
+}
+
+.subtitle-text {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 32px;
+  font-weight: 600;
+}
+
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: var(--poster-purple-dark);
+  color: var(--poster-cream);
+  border: 3px solid var(--poster-cream);
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+}
+
+.filter-btn.active, .filter-btn:hover {
+  background: var(--poster-gold);
+  color: #1f1646;
+}
+
+.arena-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
+}
+
+.arena-card-item {
+  border: 6px solid var(--poster-cream);
+  border-radius: 26px;
+  padding: 26px;
+  color: #1f1646;
+  box-shadow: 10px 12px 0px rgba(0,0,0,0.3);
+  transition: transform 0.25s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.arena-card-item:hover {
+  transform: translate(-6px, -8px) rotate(-1.5deg);
+}
+
+@media (max-width: 640px) {
+  .interactive-toast { font-size: 0.72rem; padding: 8px 14px; width: 92%; text-align: center; white-space: normal; }
+  .mont-giant-title { font-size: 2.1rem; }
+  .card-stats-grid { grid-template-columns: 1fr; }
+}
